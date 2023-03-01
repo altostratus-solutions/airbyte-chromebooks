@@ -7,7 +7,7 @@ from typing import Any, Mapping, Tuple
 
 from airbyte_cdk.sources.deprecated.client import BaseClient
 
-from .api import API, GroupMembersAPI, GroupsAPI, UsersAPI
+from .api import API, GroupMembersAPI, GroupsAPI, UsersAPI, ChromeosAPI
 
 
 class Client(BaseClient):
@@ -16,7 +16,7 @@ class Client(BaseClient):
         if not credentials:
             credentials = {"credentials_json": credentials_json, "email": email}
         self._api = API(credentials)
-        self._apis = {"users": UsersAPI(self._api), "groups": GroupsAPI(self._api), "group_members": GroupMembersAPI(self._api)}
+        self._apis = {"users": UsersAPI(self._api), "groups": GroupsAPI(self._api), "group_members": GroupMembersAPI(self._api), "chromeos":ChromeosAPI(self._api)}
         super().__init__()
 
     def get_stream_state(self, name: str) -> Any:

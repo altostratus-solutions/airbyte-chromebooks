@@ -17,7 +17,9 @@ from googleapiclient.errors import HttpError as GoogleApiHttpError
 
 from .utils import rate_limit_handling
 
-SCOPES = ["https://www.googleapis.com/auth/admin.directory.user.readonly", "https://www.googleapis.com/auth/admin.directory.group.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/admin.directory.user.readonly", 
+          "https://www.googleapis.com/auth/admin.directory.group.readonly",
+          "https://www.googleapis.com/auth/admin.directory.device.chromeos.readonly"]
 
 
 class API:
@@ -133,3 +135,12 @@ class GroupMembersAPI(StreamAPI):
         for group in groups.list():
             params = {"groupKey": group["id"]}
             yield from self.read(partial(self._api_get, resource="members"), params=params)
+
+class ChromeosAPI(StreamAPI):
+    def process_response(self, response: Dict) -> Iterator[dict]:
+        print(response["chromeosdevices"])
+        return response["chromeosdevices"]
+
+    def list(self, fields: Sequence[str] = None) -> Iterator[dict]:
+        params = {"customer": "my_customer"}
+        yield from self.read(partial(self._api_get, resource="chromeosdevices"), params=params)
