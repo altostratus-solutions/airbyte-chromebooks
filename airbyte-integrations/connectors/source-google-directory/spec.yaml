@@ -4,9 +4,14 @@ connectionSpecification:
   title: Google Chromebooks Spec
   type: object
   required:
-    - TODO
+    - access_key
+    - base
   properties:
     # 'TODO: This schema defines the configuration required for the source. This usually involves metadata such as database and/or authentication information.':
-    TODO:
+    access_key:
       type: string
-      description: describe me
+      description: Whatever
+      acess_secret: true
+    base:
+      type: string
+      description: whatever 2

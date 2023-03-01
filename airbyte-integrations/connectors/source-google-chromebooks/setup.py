@@ -10,6 +10,7 @@ MAIN_REQUIREMENTS = [
     "google-api-python-client==1.12.8",
     "google-auth-httplib2==0.0.4",
     "google-auth-oauthlib==0.4.2",
+    "oauth2client==4.1.3",
     "backoff==1.10.0",
 ]
 
