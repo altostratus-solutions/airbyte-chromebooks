@@ -16,7 +16,7 @@ class Client(BaseClient):
         if not credentials:
             credentials = {"credentials_json": credentials_json, "email": email}
         self._api = API(credentials)
-        self._apis = {"users": UsersAPI(self._api), "groups": GroupsAPI(self._api), "group_members": GroupMembersAPI(self._api), "chromeos":ChromeosAPI(self._api)}
+        self._apis = {"users": UsersAPI(self._api), "groups": GroupsAPI(self._api), "group_members": GroupMembersAPI(self._api), "chromeosdevices":ChromeosAPI(self._api)}
         super().__init__()
 
     def get_stream_state(self, name: str) -> Any:

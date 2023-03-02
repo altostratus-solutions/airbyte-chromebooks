@@ -72,7 +72,9 @@ class API:
     @backoff.on_exception(backoff.expo, GoogleApiHttpError, max_tries=7, giveup=rate_limit_handling)
     def get(self, name: str, params: Dict = None) -> Dict:
         resource = self._get_resource(name)
+        #print(f"MAKING PETITION TO -- {dir(resource()._http)}")
         response = resource().list(**params).execute()
+        print(f"RESPONSE -- {response}")
         return response
 
 
@@ -84,6 +86,8 @@ class StreamAPI(ABC):
         self._api = api
 
     def _api_get(self, resource: str, params: Dict = None):
+       #Same as
+       #return results.get('users', [])
         return self._api.get(resource, params=params)
 
     @abstractmethod
@@ -114,6 +118,7 @@ class UsersAPI(StreamAPI):
 
     def list(self, fields: Sequence[str] = None) -> Iterator[dict]:
         params = {"customer": "my_customer"}
+
         yield from self.read(partial(self._api_get, resource="users"), params=params)
 
 
@@ -138,9 +143,13 @@ class GroupMembersAPI(StreamAPI):
 
 class ChromeosAPI(StreamAPI):
     def process_response(self, response: Dict) -> Iterator[dict]:
-        print(response["chromeosdevices"])
-        return response["chromeosdevices"]
+        respuesta = response.get("chromeosdevices", [])
+        print(f"WHAT DID I GET?? -- {respuesta}")
+        return respuesta
 
     def list(self, fields: Sequence[str] = None) -> Iterator[dict]:
-        params = {"customer": "my_customer"}
+        '''
+        Utiliza los params para pasarle los parámetros
+        '''
+        params = {"customerId": "C01j7sri4"}
         yield from self.read(partial(self._api_get, resource="chromeosdevices"), params=params)

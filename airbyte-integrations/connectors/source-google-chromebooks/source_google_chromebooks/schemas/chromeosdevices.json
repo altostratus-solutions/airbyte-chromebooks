@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
-  "title": "Chromeos data Schema",
+  	"title": "Chromeos data Schema",
 	"properties": {
 		"deviceId": {"type": ["null","string"]}
 	}
