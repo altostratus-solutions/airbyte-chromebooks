@@ -3,7 +3,7 @@
 #
 
 
-import json
+import json, csv, os
 from abc import ABC, abstractmethod
 from functools import partial
 from typing import Any, Callable, Dict, Iterator, Mapping, Sequence
@@ -73,13 +73,22 @@ class API:
     def get(self, name: str, params: Dict = None) -> Dict:
         resource = self._get_resource(name)
         #print(f"MAKING PETITION TO -- {dir(resource()._http)}")
-        response = resource().list(**params).execute()
-        print(f"RESPONSE -- {response}")
+        try:
+            response = resource().list(**params).execute()
+        except GoogleApiHttpError as err:
+        # If the error is a rate limit or connection error,
+        # wait and try again.
+            if err.resp.status in [403]:
+                response = {}
+                #print("403 Forbidden error, skipped")
+            else: raise
+        #print(f"RESPONSE -- {response}")
         return response
 
 
 class StreamAPI(ABC):
     results_per_page = 100
+    current_call = " "
 
     def __init__(self, api: API, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -144,12 +153,42 @@ class GroupMembersAPI(StreamAPI):
 class ChromeosAPI(StreamAPI):
     def process_response(self, response: Dict) -> Iterator[dict]:
         respuesta = response.get("chromeosdevices", [])
-        print(f"WHAT DID I GET?? -- {respuesta}")
+        #print(f"WHAT DID I GET?? -- {respuesta}")
         return respuesta
 
     def list(self, fields: Sequence[str] = None) -> Iterator[dict]:
         '''
         Utiliza los params para pasarle los parámetros
         '''
+        client_dict = self.csv_reader()
+        #print(f'DICCIONARIO {client_dict}')
         params = {"customerId": "C01j7sri4"}
-        yield from self.read(partial(self._api_get, resource="chromeosdevices"), params=params)
+        for client in client_dict:
+            self.current_call = client
+            print(f"processing: {client}")
+            params = {"customerId":client_dict[client]}
+            yield from self.read(partial(self._api_get, resource="chromeosdevices"), params=params)
+
+    def csv_reader(self):
+        '''
+        Read CSV with clients downloaded from ADMIN partner
+        because there's no API to get the IDs
+        '''
+        client_dict = {}
+        cwd = "/airbyte/integration_code/source_google_chromebooks"  # Get the current working directory (cwd)
+        files = os.listdir(cwd) 
+        #print("Files in %r: %s" % (cwd, files))
+
+        with open("/airbyte/integration_code/source_google_chromebooks/clients.csv", mode='r', encoding='utf-8-sig') as csv_file:
+            csv_reader = csv.DictReader(csv_file)
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 0:
+                    #print(f'Column names are {", ".join(row)}')
+                    line_count += 1
+                #print(f'\t{row}')
+                CID = row['ID de Cloud Identity']
+                client_dict[row['Cliente']] = CID
+                line_count += 1
+            print(f'Processed {line_count} lines from clients.csv.')
+        return client_dict

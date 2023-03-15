@@ -31,6 +31,9 @@ RUN apk --no-cache add bash
 COPY main.py ./
 COPY source_google_chromebooks ./source_google_chromebooks
 
+# copy data 
+COPY source_google_chromebooks/clients.csv ./csv-data/clients.csv
+
 ENV AIRBYTE_ENTRYPOINT "python /airbyte/integration_code/main.py"
 ENTRYPOINT ["python", "/airbyte/integration_code/main.py"]
 

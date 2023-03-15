@@ -3,6 +3,53 @@
 	"type": "object",
   	"title": "Chromeos data Schema",
 	"properties": {
-		"deviceId": {"type": ["null","string"]}
+		"kind": {
+			"type": ["null", "string"]
+		  },
+		"deviceId": {
+			"type": ["null", "string"]
+		  },
+		"serialNumber": {
+			"type": ["null", "string"]
+		  },
+		"annotatedUser": {
+			"type": ["null", "string"]
+		  },
+		"model": {
+			"type": ["null", "string"]
+		  },
+		"osVersion": {
+			"type": ["null", "string"]
+		  },
+		"platformVersion": {
+			"type": ["null", "string"]
+		  },
+		"macAddress": {
+			"type": ["null", "string"]
+		  },
+		"bootMode": {
+			"type": ["null", "string"]
+		  },
+		"firstEnrollmentTime": {
+			"type": ["null", "string"]
+		  },
+		"recentUsers": {
+			"type": ["null", "array"],
+			    "tipo": {
+				  "type": ["null", "string"]
+				},
+				"email": {
+				  "type": ["null", "string"]
+				}
+		  },
+		"activeTimeRanges": {
+			"type": ["null", "array"],
+			  "date": {
+				"type": ["null", "string"]
+			  },
+			  "activeTime": {
+				"type": ["null", "integer"]
+			  }
+			}
 	}
 }

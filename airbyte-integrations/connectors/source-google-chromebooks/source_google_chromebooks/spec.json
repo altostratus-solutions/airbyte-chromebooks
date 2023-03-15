@@ -1,5 +1,5 @@
 {
-  "documentationUrl": "https://docs.airbyte.com/integrations/sources/google-directory",
+  "documentationUrl": "https://docs.airbyte.com/integrations/sources/google-chromebooks",
   "connectionSpecification": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Google Chromebooks Spec",
